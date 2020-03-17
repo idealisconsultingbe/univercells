@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="unvc_stock_production_lot_log_view_form" model="ir.ui.view">
+        <field name="name">unvc.stock.production.lot.log.negative.consumption.view</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="product_expiry.view_move_form_expiry" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page name="negative_consumption_log" string="Negative Consumption Log">
+                        <field name="negative_consumption_log" readonly="1"/>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!--Product Product-->
+        <record id="unvc_product_product_form_view" model="ir.ui.view">
+            <field name="name">unvc.product.product.view.form.view</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='invoicing']" position="after">
+                    <page name="migrated_stock" string="Migrated stock">
+                        <field name="migrated_stock_ids">
+                            <tree string="Migrated Stock">
+                                <field name="warehouse_id"/>
+                                <field name="quantity"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!--Product Product-->
+        <record id="unvc_migrated_stock_form_view" model="ir.ui.view">
+            <field name="name">unvc.migrated.stock.view.form.view</field>
+            <field name="model">unvc.migrated.stock</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <group>
+                    <field name="warehouse_id"/>
+                </group>
+                <group>
+                    <field name="quantity"/>
+                </group>
+            </field>
+        </record>
+
+        <!--Product Category-->
+        <record id="unvc_product_category_form_view" model="ir.ui.view">
+            <field name="name">unvc.stock.product.category.form</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="stock.product_category_form_view_inherit"/>
+            <field name="arch" type="xml">
+                <field name="removal_strategy_id" position="after">
+                    <field name="is_subcontracted"/>
+                </field>
+            </field>
+        </record>
+
+        <!--Product Category-->
+        <record id="unvc_product_uom_category_form_view" model="ir.ui.view">
+            <field name="name">unvc.stock.product.uom.category.form</field>
+            <field name="model">uom.category</field>
+            <field name="inherit_id" ref="uom.product_uom_categ_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="allow_negative_stock"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

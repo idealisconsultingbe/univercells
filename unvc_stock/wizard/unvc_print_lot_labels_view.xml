@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- Print Lot Labels Form View -->
+        <record id="unvc_print_lot_label_form_view" model="ir.ui.view">
+            <field name="name">unvc.print.lot.label.form.view</field>
+            <field name="model">unvc.print.lot.labels</field>
+            <field name="arch" type="xml">
+                <form string="Print Lot Labels" name="print_lot_label_form">
+                    <sheet>
+                        <field name="lot_label_ids" options="{'no_create': True, 'no_open': True}">
+                            <tree string="Lot Label" name="lot_label_tree" editable="bottom" create="false" edit="false" delete="false">
+                                <field name="product_id"/>
+                                <field name="lot_id"/>
+                                <field name="number_of_labels"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button string="Print" type="object" name="do_print" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" special="cancel" class="oe_link"/>
+                    </footer>
+                </form>
+             </field>
+        </record>
+
+        <record id="unvc_print_lot_label_action" model="ir.actions.act_window">
+            <field name="name">Print Lot Labels</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">unvc.print.lot.labels</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="unvc_stock_picking_print_lot_label_form_view" model="ir.ui.view">
+            <field name="name">unvc.picking.print.lot.label.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button string="Print Lot Labels" type="action" name="%(unvc_stock.unvc_print_lot_label_action)d" class="oe_highlight" attrs="{'invisible':[('state','=','draft')]}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <act_window
+            id="action_print_lot_label_from_stock_quant"
+            name="Print Lot Label"
+            res_model="unvc.print.lot.labels"
+            binding_model="stock.quant"
+            view_mode="form"
+            target="new"/>
+
+        <act_window
+            id="action_print_lot_label_from_inventory_line"
+            name="Print Lot Label"
+            res_model="unvc.print.lot.labels"
+            binding_model="stock.inventory.line"
+            view_mode="form"
+            target="new"/>
+
+        <act_window
+            id="action_print_lot_label_from_stock_lot"
+            name="Print Lot Label"
+            res_model="unvc.print.lot.labels"
+            binding_model="stock.production.lot"
+            view_mode="form"
+            target="new"/>
+    </data>
+</odoo>

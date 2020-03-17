@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherits from stock.move operation details form view -->
+    <!-- replace context -> erase default value for location and destination location in order to use the python default method -->
+    <record id="unvc_view_stock_move_operation_details_tree" model="ir.ui.view">
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_stock_move_operations" />
+        <field name="arch" type="xml">
+            <field name="move_line_ids" position="attributes">
+                <attribute name="context">{'tree_view_ref': 'stock.view_stock_move_line_operation_tree', 'default_product_uom_id': product_uom, 'default_picking_id': picking_id, 'default_move_id': id, 'default_product_id': product_id}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Inherits from stock.move.line operation tree view -->
+    <!-- replace lot_id to add create and edit options -->
+    <record id="unvc_view_stock_move_line_operation_tree" model="ir.ui.view">
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree" />
+        <field name="arch" type="xml">
+            <field name='location_id' position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name='location_dest_id' position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name="lot_id" position="replace">
+                <field name="lot_id" string="Lot/Serial Number" invisible="not context.get('show_lots_m2o')" domain="[('product_id', '=', parent.product_id)]" groups="stock.group_production_lot" context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}" options="{'limit': 10, 'create_edit': true}"/>
+<!--                attrs="{'readonly': [('in_entire_package', '=', True)]}" -->
+            </field>
+            <field name="qty_done" position="replace">
+                <field name="qty_done" attrs="{'readonly': ['|', '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}"/>
+<!--                , ('in_entire_package', '=', True)-->
+            </field>
+        </field>
+    </record>
+
+</odoo>

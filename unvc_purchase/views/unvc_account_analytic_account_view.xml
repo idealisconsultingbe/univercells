@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherits from account.analytic.Account form view -->
+    <!-- Add new generic_stock_account field -->
+    <record id="unvc_account_analytic_account_view_form" model="ir.ui.view">
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='group_id']" position="after">
+                <field name="generic_stock_account"/>
+                <field name="generic_stock_allocated_account"/>
+                <!-- UNVCPROD-33 Add new subcontracted activity flag -->
+                <field name="subcontracted_activity_account"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

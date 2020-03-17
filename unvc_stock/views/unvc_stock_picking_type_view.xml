@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherits from stock.picking form view -->
+    <!-- Add new request_field next to scheduled_date -->
+    <record id="unvc_stock_picking_type_view_form" model="ir.ui.view">
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form" />
+        <field name="arch" type="xml">
+            <field name="show_reserved" position="after">
+                <field name="picking_request"/>
+            </field>
+        </field>
+    </record>
+</odoo>

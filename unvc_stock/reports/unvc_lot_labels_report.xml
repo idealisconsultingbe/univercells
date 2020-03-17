@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="unvc_lot_label_stickers" model="report.paperformat">
+            <field name="name">UNVC Lot Label Sticker</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">40</field>
+            <field name="page_width">102</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">0</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">203</field>
+        </record>
+
+        <template id="unvc_lot_label_report_document">
+            <div class="raw">
+                <t t-foreach="docs" t-as="print_lot_label">
+                    <t t-foreach="print_lot_label.lot_label_ids" t-as="lot_label">
+                        <t t-if="lot_label.lot_id and lot_label.product_id.default_code">
+                            <t t-set="qr_code" t-value="'(01)' + lot_label.product_id.default_code + '(21)' + lot_label.lot_id.name"/>
+                        </t>
+                        <t t-elif="lot_label.lot_id">
+                            <t t-set="qr_code" t-value="'(21)' + lot_label.lot_id.name"/>
+                        </t>
+                        <t t-elif="lot_label.product_id.default_code">
+                            <t t-set="qr_code" t-value="'(01)' + lot_label.product_id.default_code"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="qr_code" t-value="'(01)'"/>
+                        </t>
+                        <t t-if="len(lot_label.product_id.name) > 42">
+                            <t t-set="product_name1" t-value="lot_label.product_id.name[:42]+'-'"/>
+                            <t t-set="product_name2" t-value="lot_label.product_id.name[42:]"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="product_name1" t-value="lot_label.product_id.name"/>
+                            <t t-set="product_name2" t-value="''"/>
+                        </t>
+                        <t t-foreach="range(0, lot_label.number_of_labels)" t-as="i">
+                            ^XA
+
+                            ^FX Top section with product reference.
+                            ^CF0,20
+                            ^FO210,20^FDReference:^FS
+                            ^FO370,20^FD<t t-esc="lot_label.product_id.default_code"/>^FS
+                            ^FO210,40^FD<t t-esc="product_name1"/>^FS
+                            ^FO210,62^FD<t t-esc="product_name2"/>^FS
+                            ^FO0,80^GB700,1,3^FS
+
+                            ^FX Second section with lot number.
+                            ^CF0,20
+                            ^FO210,90^FDLot/Serial Number:^FS
+                            ^FO370,90^FD<t t-esc="lot_label.lot_id.name if lot_label.lot_id else ''"/>^FS
+                            ^FO210,115^FDEnd Of Life:^FS
+                            ^FO370,115^FD<t t-esc="time.strftime('%d-%m-%Y', time.strptime(lot_label.lot_id.life_date, '%Y-%m-%d %H:%M:%S')) if lot_label.lot_id and lot_label.lot_id.life_date else False"/>^FS
+                            ^FO0,140^GB490,1,3^FS
+
+                            ^FX Third section with supplier number.
+                            ^CF0,20
+                            ^FO210,150^FDSupplier Batch Number:^FS
+                            ^FO210,175^FD<t t-esc="lot_label.lot_id.ref if lot_label.lot_id else ''"/>^FS
+
+                            ^FX Fourth section QR code.
+                            ^FO490,115^GB1,150,4^FS
+                            ^FO490,115^GB160,1,3^FS
+                            ^BQN,2,4
+                            ^FO500,118^FH\^FDLA,<t t-esc="qr_code"/>^FS
+
+                            ^XZ
+                        </t>
+                    </t>
+                </t>
+            </div>
+        </template>
+
+        <report
+                id="unvc_lot_label_report"
+                string="Report Lot Labels"
+                model="unvc.print.lot.labels"
+                report_type="qweb-pdf"
+                file="unvc_stock.unvc_lot_label_report_document"
+                name="unvc_stock.unvc_lot_label_report_document"
+                menu="True"
+        />
+
+        <!--        <record id="unvc_stock.unvc_lot_label_report" model="unvc.print.lot.labels">-->
+        <!--            <field name="paperformat_id" ref="unvc_stock.unvc_lot_label_stickers"/>-->
+        <!--        </record>-->
+    </data>
+</odoo>
